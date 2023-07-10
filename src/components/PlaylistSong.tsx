@@ -30,7 +30,7 @@ export default function PlaylistSong({ data, onRemove }: { data: any, onRemove?:
           key: "remove",
           icon: <IconTrash size={16} />,
           title: "Remove from playlist",
-          onClick: () => onRemove ? onRemove(id) : null,
+          onClick: () => onRemove ? onRemove(data) : null,
           color: "red"
         }
       ])}
