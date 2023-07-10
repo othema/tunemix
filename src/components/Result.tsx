@@ -6,7 +6,7 @@ import { clipboard, shell } from "electron";
 export default function Result({ data, onAdd }: { data: any, onAdd?: (result: any) => void }) {
   const showContextMenu = useContextMenu();
   const theme = useMantineTheme();
-  const link = "https://www.youtube.com" + data.url_suffic;
+  const link = "https://www.youtube.com" + data.url_suffix;
   
   return (
     <Card
