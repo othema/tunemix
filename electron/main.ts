@@ -2,8 +2,6 @@ import { app, BrowserWindow, dialog, ipcMain } from 'electron'
 import path from 'node:path'
 import { search } from '../src/lib/youtube';
 
-process.env["FLUENTFFMPEG_COV"] = "";  // Bro sometimes this works sometimes it doesn't, but when I remove it it used to break but now it doesn't I HAVENT CHANGED ANYTHING
-
 // The built directory structure
 //
 // ├─┬─┬ dist
@@ -58,7 +56,6 @@ ipcMain.handle("dialog", async (event, method: string, params: any) => {
 });
 
 ipcMain.handle("search", async (event, query: string) => {
-  console.log("HI")
   const result = await search(query);
   return result;
 })
