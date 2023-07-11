@@ -3,6 +3,7 @@ import { getAudioStream } from "./youtube";
 import { setGracefulCleanup } from "tmp-promise";
 import { ipcRenderer } from "electron";
 import { formatDuration } from "./format";
+import { rmSync } from "fs";
 // @ts-ignore
 const colorThief = require("colorthief");
 
@@ -48,6 +49,13 @@ export async function render(image: string, videos: any[], name: string, onPerce
       sendPercent();
     }
 
+    function reset() {
+      deleteFile(audioPath);
+      deleteFile(colorVideoPath);
+      deleteFile(resizedImage);
+      deleteFile(videoOverlayPath);
+    }
+
     let audios: string[] = [];
     let duration = 0;
     for (let i = 0; i < videos.length; i++) {
@@ -58,9 +66,12 @@ export async function render(image: string, videos: any[], name: string, onPerce
       duration += formatDuration(video.duration);
       onProgress({ percent: (i / videos.length) * 100 }, "download");
     }
+
+    let audioPath: string, colorVideoPath: string, resizedImage: string, videoOverlayPath: string, finalOutput: string;
+
     const dominantColor = await colorThief.getColor(image);
     const dominantHex = await rgbToHex(dominantColor[0], dominantColor[1], dominantColor[1]);
-    const [audioPath, colorVideoPath, resizedImage] = await Promise.all([
+    [audioPath, colorVideoPath, resizedImage] = await Promise.all([
       combineAudios(audios, onProgress),
       blankVideo(dominantHex, [1920, 1080], duration, onProgress),
       resizeImage(image, [630, 630], onProgress)
@@ -69,14 +80,15 @@ export async function render(image: string, videos: any[], name: string, onPerce
     progress = 60;
     sendPercent();
     
-    const videoOverlayPath = await overlayImage(colorVideoPath, resizedImage, onProgress);
+    videoOverlayPath = await overlayImage(colorVideoPath, resizedImage, onProgress);
     progress = 80;
     sendPercent();
 
-    const finalOutput = await addAudio(audioPath, videoOverlayPath, onProgress, finalPath);
+    finalOutput = await addAudio(audioPath, videoOverlayPath, onProgress, finalPath);
     progress = 100;
     sendPercent();
 
+    reset();
     onFinish(finalOutput)
     console.log(finalOutput);
   });
@@ -85,4 +97,11 @@ export async function render(image: string, videos: any[], name: string, onPerce
 // https://stackoverflow.com/a/5624139/14086291
 function rgbToHex(r: number, g: number, b: number) {
   return "#" + (1 << 24 | r << 16 | g << 8 | b).toString(16).slice(1);
+}
+
+function deleteFile(path: string | null) {
+  if (!path) return;
+  try {
+    rmSync(path);
+  } catch (e) {}
 }
