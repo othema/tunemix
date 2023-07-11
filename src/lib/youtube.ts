@@ -36,7 +36,7 @@ export async function search(query: string, maxResults = null) {
   return results;
 }
 
-function parseHtml(response) {
+function parseHtml(response: string) {
   const results = [];
   const start = response.indexOf('ytInitialData') + 'ytInitialData'.length + 3;
   const end = response.indexOf('};', start) + 1;

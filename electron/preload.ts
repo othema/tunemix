@@ -1,5 +1,3 @@
-import { contextBridge, ipcRenderer } from "electron/renderer"
-
 function domReady(condition: DocumentReadyState[] = ['complete', 'interactive']) {
   return new Promise(resolve => {
     if (condition.includes(document.readyState)) {

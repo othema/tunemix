@@ -47,10 +47,12 @@ function createWindow() {
 }
 
 app.on('window-all-closed', () => {
-  win = null
+  win = null;
+  app.quit();
 })
 
 ipcMain.handle("dialog", async (event, method: string, params: any) => {
+  // @ts-ignore
   const result = await dialog[method](params);
   event.sender.send("dialog-return", result);
 });
