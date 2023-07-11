@@ -27,8 +27,7 @@
         ]
       }
     ],
-    "artifactName": "${productName}_${version}.${ext}",
-    "icon": "./public/favicon.svg"
+    "artifactName": "${productName}_${version}.${ext}"
   },
   "nsis": {
     "oneClick": false,
